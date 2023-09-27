@@ -4,27 +4,22 @@
 #include <string.h>
 #include <arpa/inet.h>
 
+#include "netlib.h"
+
 using namespace std;
 
-int const PORT = 8080;
+const int PORT = 8080;
+const char* ADDR = "127.0.0.1";
+
 
 int main() {
     int status, valread, client_fd;
     struct sockaddr_in serv_addr;
     char* hello = "Hello from client";
     char buffer[1024] = {0};
-    if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        cerr << "Socket creation error" << endl;
-        return -1;
-    }
+    client_fd = create_client_fd(ADDR, PORT);
 
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-
-    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        cerr << "Invalid address, not supported" << endl;
-        return -1;
-    }
+    serv_addr = create_addr(ADDR, PORT);
 
     if ((status = connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr))) < 0) {
         cerr << "Conncetion failed" << endl;
@@ -32,7 +27,7 @@ int main() {
     }
 
     send(client_fd, hello, strlen(hello), 0);
-    cout << "Hell sent" << endl;
+    cout << "Hello sent" << endl;
     valread = read(client_fd, buffer, 1024);
     cout << buffer << endl;
 
