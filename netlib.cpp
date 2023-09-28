@@ -36,7 +36,7 @@ int create_server_fd(const int port, const int n_conns) {
     return server_fd;
 }
 
-int create_client_fd(const char* addr, const int port) {
+int create_client_fd(const int port) {
     int client_fd;
 
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -47,12 +47,12 @@ int create_client_fd(const char* addr, const int port) {
     return client_fd;
 }
 
-sockaddr_in create_addr(const char* addr, const int port) {
+sockaddr_in create_addr(const string addr, const int port) {
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
 
-    if (inet_pton(AF_INET, addr, &serv_addr.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, addr.c_str(), &serv_addr.sin_addr) <= 0) {
         cerr << "Invalid address, not supported" << endl;
         exit(EXIT_FAILURE);
     }
@@ -61,14 +61,19 @@ sockaddr_in create_addr(const char* addr, const int port) {
 
 }
 
-void mysend(int target_fd, char* msg) {
-    // Send length of message first
-    send(target_fd, msg, strlen(msg), 0);
+void mysend(int target_fd, string msg) {
+    if (msg.length() > BUFSIZE) {
+        string new_msg(msg, 0, BUFSIZE);
+        send(target_fd, new_msg.c_str(), BUFSIZE, 0);
+    }
+
+    send(target_fd, msg.c_str(), BUFSIZE, 0);
 }
 
-void myread(int sock) {
+string myread(int sock) {
     char buffer[BUFSIZE] = {0};
 
     read(sock, buffer, BUFSIZE);
-    printf("%s\n", buffer);
+
+    return string(buffer);
 }
