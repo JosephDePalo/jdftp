@@ -27,12 +27,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    valread = read(new_socket, buffer, 1024);
-    cout << buffer << endl;
-    send(new_socket, hello, strlen(hello), 0);
-    cout << "Sent hello" << endl;
-    
-
+    myread(new_socket);
 
     return 0;
 }

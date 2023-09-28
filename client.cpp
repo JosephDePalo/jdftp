@@ -26,11 +26,7 @@ int main() {
         return -1;
     }
 
-    send(client_fd, hello, strlen(hello), 0);
-    cout << "Hello sent" << endl;
-    valread = read(client_fd, buffer, 1024);
-    cout << buffer << endl;
-
+    mysend(client_fd, "Hello");
 
     close(client_fd);
     return 0;

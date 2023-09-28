@@ -60,3 +60,15 @@ sockaddr_in create_addr(const char* addr, const int port) {
     return serv_addr;
 
 }
+
+void mysend(int target_fd, char* msg) {
+    // Send length of message first
+    send(target_fd, msg, strlen(msg), 0);
+}
+
+void myread(int sock) {
+    char buffer[BUFSIZE] = {0};
+
+    read(sock, buffer, BUFSIZE);
+    printf("%s\n", buffer);
+}
