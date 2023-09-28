@@ -1,14 +1,7 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <string.h>
-
 #include "netlib.h"
 
 using namespace std;
 
-const int PORT = 8080;
 const int N_CONNS = 3;
 
 
@@ -16,6 +9,7 @@ int main() {
     int server_fd, new_socket;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
+    string output;
 
     server_fd = create_server_fd(PORT, N_CONNS);
 
@@ -23,12 +17,9 @@ int main() {
         cerr << "accept" << endl;
         exit(EXIT_FAILURE);
     }
-    string output;
-    while (true) {
-        output = myread(new_socket);
-        if (output.empty()) break;
-        cout << output << endl;
-    }
+
+
+    read_file(new_socket);
 
 
     return 0;

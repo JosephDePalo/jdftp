@@ -1,18 +1,22 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <string.h>
-#include <arpa/inet.h>
-
 #include "netlib.h"
 
 using namespace std;
 
-const int PORT = 8080;
 const string ADDR = "127.0.0.1";
 
 
-int main() {
+int main(int argc, char argv[]) {
+    istringstream iss;
+    string file_name;
+
+
+    if (argc != 2) {
+        exit(EXIT_FAILURE);
+    }
+
+    iss >> file_name;
+
+
     int client_fd;
     struct sockaddr_in serv_addr;
     string input;
@@ -25,11 +29,8 @@ int main() {
         return -1;
     }
 
-    while (true) {
-        getline(cin, input);
-        mysend(client_fd, input);
-        if (input.empty()) break;
-    }
+
+    send_file(client_fd, file_name);
 
     close(client_fd);
     return 0;
