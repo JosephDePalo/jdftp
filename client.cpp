@@ -1,5 +1,5 @@
-#include "netlib.h"
-#include "client_cmds.h"
+#include "lib/netlib.h"
+#include "lib/client_cmds.h"
 
 using namespace std;
 
@@ -10,10 +10,10 @@ int main() {
 
     State state;
 
-    while (true) {
+    while (true) { // Client REPL
         cout << "> ";
         getline(cin, cmd);
-        handler(cmd, state);
+        client_handler(cmd, state);
     }
 
     return 0;

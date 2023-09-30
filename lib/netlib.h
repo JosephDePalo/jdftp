@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <vector>
 
 const int PORT = 1234;
 const int BUFSIZE = 4096;
