@@ -61,6 +61,22 @@ sockaddr_in create_addr(const string addr, const int port) {
 
 }
 
+int get_client() {
+    int server_fd, new_socket;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+    string output;
+
+    server_fd = create_server_fd(PORT, 3);
+
+    if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
+        cerr << "accept" << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    return new_socket;
+}
+
 void mysend(int target_fd, string msg) {
     if (msg.length() > BUFSIZE) {
         string new_msg(msg, 0, BUFSIZE);
