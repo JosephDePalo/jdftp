@@ -5,6 +5,6 @@
 #include <vector>
 #include <string>
 
-void server_handler(std::string input);
+void server_handler(std::string input, int target_fd);
 
 #endif

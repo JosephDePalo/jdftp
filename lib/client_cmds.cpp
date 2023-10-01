@@ -28,7 +28,7 @@ void client_handler(string input, State& state) {
                 cout << "Usage: put <file>" << endl;
                 break;
             }
-            cout << "put" << endl;
+            state.put_file(argv[1]);
             break;
         case MGET:
             if (argc < 2) {

@@ -1,9 +1,10 @@
 #include "server_cmds.h"
+#include "netlib.h"
 #include "helpers.h"
 
 using namespace std;
 
-void server_handler(string input) {
+void server_handler(string input, int target_fd) {
     vector<string> argv = parse(input);
     int argc = argv.size();
 
@@ -14,10 +15,12 @@ void server_handler(string input) {
     
     switch(command) {
         case GET:
-            cout << "get" << endl;
+            cout << "get " << argv[1] << endl;
+            send_file(target_fd, argv[1]);
             break;
         case PUT:
-            cout << "put" << endl;
+            cout << "put" << argv[1] << endl;
+            read_file(target_fd);
             break;
         case MGET:
             cout << "mget" << endl;

@@ -96,23 +96,23 @@ string myread(int sock) {
 
 void read_file(int sock) {
     string file_name = myread(sock);
-    ofstream outfile("output.txt", ios::binary);
-    string line;
+    ofstream outfile(file_name, ios::binary);
+    string packet = "";
     while (true) {
-        line = myread(sock);
-        if (line.empty()) break;
-        outfile << line << endl;
+        packet = myread(sock);
+        if (packet.empty()) break;
+        outfile << packet;
     }
 }
 
 void send_file(int target_fd, string file_name) {
     ifstream file(file_name, ios::binary);
-    char buf[BUFSIZE];
+    char buffer[BUFSIZE] = {0};
 
     mysend(target_fd, file_name);
-    while (file.peek() != EOF) {
-        file.read(buf, BUFSIZE);
-        mysend(target_fd, buf);
+    while (file.good()) {
+        file.read(buffer, BUFSIZE);
+        mysend(target_fd, buffer);
     }
     mysend(target_fd, "");
 
