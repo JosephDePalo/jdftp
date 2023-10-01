@@ -35,21 +35,21 @@ void client_handler(string input, State& state) {
                 cout << "Usage: mget <file1> <file2> ..." << endl;
                 break;
             }
-            cout << "mget" << endl;
+            for (int i = 1; i < argc; i++) state.get_file(argv[i]);
             break;
         case MPUT:
             if (argc < 2) {
                 cout << "Usage: mput <file1> <file2> ..." << endl;
                 break;
             }
-            cout << "mput" << endl;
+            for (int i = 1; i < argc; i++) state.put_file(argv[i]);
             break;
         case DELETE:
             if (argc != 2) {
                 cout << "Usage: delete <file>" << endl;
                 break;
             }
-            cout << "delete" << endl;
+            mysend(state.fd(), "delete " + argv[1]);
             break;
         case OPEN:
             if (argc != 2) {
@@ -63,28 +63,25 @@ void client_handler(string input, State& state) {
                 cout << "Usage: close" << endl;
                 break;
             }
-            cout << "close" << endl;
+            state.close_conn();
             break;
         case LS:
             if (argc != 1) {
                 cout << "Usage: ls" << endl;
                 break;
             }
-            cout << "ls" << endl;
             break;
         case CD:
             if (argc != 2) {
                 cout << "Usage: cd <dir>" << endl;
                 break;
             }
-            cout << "cd" << endl;
             break;
         case PWD:
             if (argc != 1) {
                 cout << "Usage: pwd" << endl;
                 break;
             }
-            cout << "pwd" << endl;
             break;
     }
 }
@@ -113,6 +110,14 @@ void State::open_conn(string ip) {
     this->open_ = true;
     this->fd_ = client_fd;
     cout << "Connected to " << ip << endl;
+}
+
+void State::close_conn() {
+    close(this->fd());
+
+    this->open_ = false;
+    this->fd_ = -1;
+    cout << "Disconnected from server" << endl;
 }
 
 void State::get_file(string filename) {

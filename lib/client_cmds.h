@@ -26,6 +26,7 @@ public:
     bool is_open() const;
     int fd() const;
     void open_conn(std::string ip);
+    void close_conn();
     void get_file(std::string filename);
     void put_file(std::string filename);
 
