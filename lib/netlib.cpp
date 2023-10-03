@@ -8,30 +8,23 @@ int create_server_fd(const int port, const int n_conns) {
     struct sockaddr_in address;
     int opt = 1;
     // Create Socket
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        cerr << "socket failed" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        return -1;
 
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-        cerr << "setsockopt" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+        return -1;
+
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
     // Bind to address
-    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        cerr << "bind failed" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0)
+        return -1;
 
     // Listen on port
-    if (listen(server_fd, n_conns) < 0) {
-        cerr << "listen" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if (listen(server_fd, n_conns) < 0)
+        return -1;
 
     return server_fd;
 }
@@ -39,10 +32,8 @@ int create_server_fd(const int port, const int n_conns) {
 int create_client_fd(const int port) {
     int client_fd;
 
-    if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        cerr << "Socket creation error" << endl;
+    if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
         return -1;
-    }
 
     return client_fd;
 }
@@ -52,10 +43,8 @@ sockaddr_in create_addr(const string addr, const int port) {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(port);
 
-    if (inet_pton(AF_INET, addr.c_str(), &serv_addr.sin_addr) <= 0) {
-        cerr << "Invalid address, not supported" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if (inet_pton(AF_INET, addr.c_str(), &serv_addr.sin_addr) <= 0)
+        throw invalid_argument("Invalid address, not supported");
     
     return serv_addr;
 
@@ -69,10 +58,8 @@ int get_client() {
 
     server_fd = create_server_fd(PORT, 3);
 
-    if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
-        cerr << "accept" << endl;
-        exit(EXIT_FAILURE);
-    }
+    if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
+        return -1;
 
     return new_socket;
 }

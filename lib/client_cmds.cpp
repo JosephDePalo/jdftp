@@ -21,28 +21,34 @@ void client_handler(string input, State& state) {
                 cout << "Usage: get <file>" << endl;
                 break;
             }
-            state.get_file(argv[1]);
+            if (state.get_file(argv[1]) < 0)
+                cerr << "Failed to get " << argv[1] << endl;
             break;
         case PUT:
             if (argc != 2) {
                 cout << "Usage: put <file>" << endl;
                 break;
             }
-            state.put_file(argv[1]);
+            if (state.put_file(argv[1]) < 0)
+                cerr << "Failed to put " << argv[1] << endl;
             break;
         case MGET:
             if (argc < 2) {
                 cout << "Usage: mget <file1> <file2> ..." << endl;
                 break;
             }
-            for (int i = 1; i < argc; i++) state.get_file(argv[i]);
+            for (int i = 1; i < argc; i++)
+                if (state.get_file(argv[i]) < 0)
+                    cerr << "Failed to get " << argv[i] << endl;
             break;
         case MPUT:
             if (argc < 2) {
                 cout << "Usage: mput <file1> <file2> ..." << endl;
                 break;
             }
-            for (int i = 1; i < argc; i++) state.put_file(argv[i]);
+            for (int i = 1; i < argc; i++)
+                if (state.get_file(argv[i]) < 0)
+                    cerr << "Failed to get " << argv[i] << endl;
             break;
         case DELETE:
             if (argc != 2) {
@@ -56,7 +62,8 @@ void client_handler(string input, State& state) {
                 cout << "Usage: open <host>" << endl;
                 break;
             }
-            state.open_conn(argv[1]);
+            if (state.open_conn(argv[1]) < 0)
+                cerr << "Failed to open connection to " << argv[1] << endl;
             break;
         case CLOSE:
             if (argc != 1) {
@@ -96,7 +103,7 @@ int State::fd() const {
     return this->fd_;
 }
 
-void State::open_conn(string ip) {
+int State::open_conn(string ip) {
     int client_fd;
     struct sockaddr_in serv_addr;
     string cmd;
@@ -104,32 +111,42 @@ void State::open_conn(string ip) {
     client_fd = create_client_fd(PORT);
     serv_addr = create_addr(ip, PORT);
 
-    if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-        return;
+    if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        cerr << "Failed to connect" << endl;
+        return -1;
+    }
 
     this->open_ = true;
     this->fd_ = client_fd;
     cout << "Connected to " << ip << endl;
+    return 0;
 }
 
-void State::close_conn() {
+int State::close_conn() {
+    if (!this->is_open())
+        return -1;
     close(this->fd());
 
     this->open_ = false;
     this->fd_ = -1;
     cout << "Disconnected from server" << endl;
+    return 0;
 }
 
-void State::get_file(string filename) {
-    if (!this->is_open()) return;
+int State::get_file(string filename) {
+    if (!this->is_open())
+        return -1;
     mysend(this->fd(), "get " + filename);
 
     read_file(this->fd());
+    return 0;
 }
 
-void State::put_file(string filename) {
-    if (!this->is_open()) return;
+int State::put_file(string filename) {
+    if (!this->is_open())
+        return -1;
     mysend(this->fd(), "put " + filename);
     
     send_file(this->fd(), filename);
+    return 0;
 }
