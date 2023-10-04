@@ -5,6 +5,7 @@
 using namespace std;
 
 void server_handler(string input, int target_fd) {
+    ostringstream ss;
     vector<string> argv = parse(input);
     int argc = argv.size();
 
@@ -36,10 +37,21 @@ void server_handler(string input, int target_fd) {
         case CLOSE:
             break;
         case LS:
+            ss.str("");
+            for (const auto &file : ls(filesystem::current_path().u8string()))
+                ss << file << " " << endl;
+            mysend(target_fd, ss.str());
             break;
         case CD:
             break;
         case PWD:
             break;
     }
+}
+
+vector<string> ls(string path) {
+    vector<string> files;
+    for (const auto &file : filesystem::directory_iterator(path))
+        files.push_back(parse(file.path().u8string(), '/').back());
+    return files;
 }

@@ -64,19 +64,26 @@ void client_handler(string input, State& state) {
             }
             if (state.open_conn(argv[1]) < 0)
                 cerr << "Failed to open connection to " << argv[1] << endl;
+            else
+                cout << "Connected to " << argv[1] << endl;
             break;
         case CLOSE:
             if (argc != 1) {
                 cout << "Usage: close" << endl;
                 break;
             }
-            state.close_conn();
+            if (state.close_conn() < 0)
+                cerr << "Failed to disconnect" << endl;
+            else
+                cout << "Disconnected" << endl;
             break;
         case LS:
             if (argc != 1) {
                 cout << "Usage: ls" << endl;
                 break;
             }
+            mysend(state.fd(), "ls");
+            cout << myread(state.fd()) << endl;
             break;
         case CD:
             if (argc != 2) {
@@ -111,14 +118,11 @@ int State::open_conn(string ip) {
     client_fd = create_client_fd(PORT);
     serv_addr = create_addr(ip, PORT);
 
-    if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
-        cerr << "Failed to connect" << endl;
+    if (connect(client_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
         return -1;
-    }
 
     this->open_ = true;
     this->fd_ = client_fd;
-    cout << "Connected to " << ip << endl;
     return 0;
 }
 
@@ -129,7 +133,6 @@ int State::close_conn() {
 
     this->open_ = false;
     this->fd_ = -1;
-    cout << "Disconnected from server" << endl;
     return 0;
 }
 

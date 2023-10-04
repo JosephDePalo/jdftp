@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 enum Cmd {GET, PUT, MGET, MPUT, DELETE, OPEN, CLOSE, LS, CD, PWD};
 std::unordered_map<std::string,Cmd> const cmd_map = {
@@ -13,6 +14,6 @@ std::unordered_map<std::string,Cmd> const cmd_map = {
     {"cd", CD}, {"pwd", PWD}
 };
 
-std::vector<std::string> parse(std::string raw_input);
+std::vector<std::string> parse(std::string raw_input, char delimiter = ' ');
 
 #endif

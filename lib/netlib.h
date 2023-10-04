@@ -20,8 +20,8 @@ sockaddr_in create_addr(const std::string addr, const int port);
 int get_client();
 void mysend(int target_fd, std::string msg);
 std::string myread(int sock);
-void read_file(int sock);
-void send_file(int target_fd, std::string file_name);
+int read_file(int sock);
+int send_file(int target_fd, std::string file_name);
 
 
 #endif

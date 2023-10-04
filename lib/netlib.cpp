@@ -81,20 +81,29 @@ string myread(int sock) {
     return string(buffer);
 }
 
-void read_file(int sock) {
+int read_file(int sock) {
     string file_name = myread(sock);
     ofstream outfile(file_name, ios::binary);
+    
+    if (outfile.bad())
+        return -1;
+
     string packet = "";
     while (true) {
         packet = myread(sock);
         if (packet.empty()) break;
         outfile << packet;
     }
+
+    return 0;
 }
 
-void send_file(int target_fd, string file_name) {
+int send_file(int target_fd, string file_name) {
     ifstream file(file_name, ios::binary);
     char buffer[BUFSIZE] = {0};
+
+    if (file.bad())
+        return -1;
 
     mysend(target_fd, file_name);
     while (file.good()) {
@@ -104,4 +113,6 @@ void send_file(int target_fd, string file_name) {
     mysend(target_fd, "");
 
     file.close();
+
+    return 0;
 }
