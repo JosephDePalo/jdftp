@@ -26,13 +26,17 @@ of implemented commands, see [below](#implemented-commands).
 - `mget <file> <file> ...`: Downloads multiple files from the server.
 - `mput <file> <file> ...`: Uploads multiple files to the server.
 - `delete <file>`: Deletes the given file from the server.
+- `ls`: Lists the files in the current directory on the server.
+- `cd <dir>`: Changes the current directory on the server.
+- `pwd`: Prints the current directory on the server.
+
 
 ## TODO
-- [ ] Implement `ls` command.
-- [ ] Implement `cd` command.
+- [X] Implement `ls` command.
+- [X] Implement `cd` command.
 - [ ] Implement `mkdir` command.
 - [ ] Implement `rmdir` command.
-- [ ] Implement `pwd` command.
+- [X] Implement `pwd` command.
 - [ ] Implement `rename` command.
 - [ ] Implement `help` command.
 - [ ] Implement user authentication.

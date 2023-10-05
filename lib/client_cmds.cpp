@@ -83,19 +83,22 @@ void client_handler(string input, State& state) {
                 break;
             }
             mysend(state.fd(), "ls");
-            cout << myread(state.fd()) << endl;
+            cout << myread(state.fd()) << endl; // Prettify ls output
             break;
         case CD:
             if (argc != 2) {
                 cout << "Usage: cd <dir>" << endl;
                 break;
             }
+            mysend(state.fd(), "cd " + argv[1]);
             break;
         case PWD:
             if (argc != 1) {
                 cout << "Usage: pwd" << endl;
                 break;
             }
+            mysend(state.fd(), "pwd");
+            cout << myread(state.fd()) << endl;
             break;
     }
 }

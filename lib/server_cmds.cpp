@@ -33,18 +33,20 @@ void server_handler(string input, int target_fd) {
             remove(argv[1].c_str());
             break;
         case OPEN:
-            break;
         case CLOSE:
             break;
         case LS:
             ss.str("");
             for (const auto &file : ls(filesystem::current_path().u8string()))
-                ss << file << " " << endl;
+                ss << file << " ";
+            ss << endl;
             mysend(target_fd, ss.str());
             break;
         case CD:
+            std::filesystem::current_path(argv[1]); // TODO validate path
             break;
         case PWD:
+            mysend(target_fd, std::filesystem::current_path().u8string());
             break;
     }
 }
