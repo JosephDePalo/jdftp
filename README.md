@@ -44,5 +44,5 @@ of implemented commands, see [below](#implemented-commands).
 - [ ] Implement file locking.
 - [ ] Implement file authentication.
 - [ ] Implement file encryption.
-- [ ] Implement multi-threading for concurrent connections.
+- [X] Implement multi-threading for concurrent connections.
 - [ ] Implement multi-threading for concurrent file transfers.

@@ -50,7 +50,21 @@ sockaddr_in create_addr(const string addr, const int port) {
 
 }
 
-int get_client() {
+Connection::Connection(int fd, string ip) : fd_{fd}, ip_{ip}, open_{true} { }
+
+bool Connection::is_open() const {
+    return open_;
+}
+
+int Connection::fd() const {
+    return fd_;
+}
+
+string Connection::ip() const {
+    return ip_;
+}
+
+Connection get_client() {
     int server_fd, new_socket;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
@@ -59,9 +73,9 @@ int get_client() {
     server_fd = create_server_fd(PORT, 3);
 
     if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
-        return -1;
+        throw invalid_argument("Something went wrong getting the client");
 
-    return new_socket;
+    return Connection(new_socket, to_string(address.sin_addr.s_addr));
 }
 
 void mysend(int target_fd, string msg) {

@@ -5,13 +5,10 @@
 using namespace std;
 
 int main() {
-    string output;
-    int new_socket = get_client();
-    cout << "Client connected" << endl;
-
+    vector<thread*> thread_arr;
     while (true) {
-        output = myread(new_socket);
-        server_handler(output, new_socket);
+        thread* new_thread = new thread(handle_client, get_client());
+        thread_arr.push_back(new_thread);
     }
 
     return 0;

@@ -4,6 +4,16 @@
 
 using namespace std;
 
+void handle_client(Connection conn) {
+    string output;
+    cout << "Client connected" << endl;
+
+    while (true) {
+        output = myread(conn.fd());
+        server_handler(output, conn.fd());
+    }
+}
+
 void server_handler(string input, int target_fd) {
     ostringstream ss;
     vector<string> argv = parse(input);
@@ -39,7 +49,6 @@ void server_handler(string input, int target_fd) {
             ss.str("");
             for (const auto &file : ls(filesystem::current_path().u8string()))
                 ss << file << " ";
-            ss << endl;
             mysend(target_fd, ss.str());
             break;
         case CD:
